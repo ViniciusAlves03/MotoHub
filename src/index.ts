@@ -1,5 +1,5 @@
 import "dotenv/config"
-import {App} from "./app/app"
+import { App } from "./app/app"
 import { mongoose } from "./app/db/conn";
 
 const PORT = process.env.PORT || process.env.LOCAL_PORT;
