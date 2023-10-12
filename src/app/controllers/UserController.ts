@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import bcrypt from "bcrypt";
+import { verify } from 'jsonwebtoken';
 import User from "../models/User";
 import createUserToken from '../helpers/create-user-token';
 import getToken from '../helpers/get-token';
-import { verify } from 'jsonwebtoken';
+import getUserByToken from '../helpers/get-user-by-token';
+import { IUser } from '../models/interfaces/IUser';
 
 class UserController {
     static async register(req: Request, res: Response) {
@@ -49,12 +51,55 @@ class UserController {
         await createUserToken(user, req, res)
     }
 
+    static async getUserById(req: Request, res: Response) {
+        const id = req.params.id
+
+        console.log(req)
+
+        const token = getToken(req)
+        if (!token) { return res.status(422).json("Acesso negado!") }
+
+        const user = await User.findById(id).select('-password')
+
+        if (!user) { return res.status(422).json("Usuário não encontrado!") }
+
+        res.status(200).json({ user })
+    }
+
+    static async editUser(req: Request, res: Response) {
+
+        const token = getToken(req)
+        const user = await getUserByToken(token, res) as IUser
+
+        const { name, phone, password } = req.body
+
+        if (!name) { return res.status(422).json("O nome é obrigatório") }
+        user.name = name
+
+        if (!phone) { return res.status(422).json("O telefone é obrigatório") }
+        user.phone = phone
+
+        if (!password) { return res.status(422).json("A senha é obrigatória") }
+        user.password = password
+
+        try {
+            await User.findOneAndUpdate(
+                { _id: user.id },
+                { $set: user },
+                { new: true }
+            );
+
+            res.status(200).json("Usuário atualizado com sucesso!" )
+        } catch (error) {
+            return res.status(422).json("Usuário não foi atualizado, aconteceu um erro inesperado!")
+        }
+    }
+
     static async checkUser(req: Request, res: Response) {
 
         let currentUser = null;
 
         try {
-
             if (req.headers.authorization) {
                 const token = getToken(req)
                 const decoded = verify(token, 'usersecret')
@@ -66,7 +111,6 @@ class UserController {
 
             res.status(200).send(currentUser)
         } catch (error) {
-
             res.status(500).json("Token inválido")
         }
     }
