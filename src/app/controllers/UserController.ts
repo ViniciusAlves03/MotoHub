@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from "bcrypt";
 import User from "../models/User";
+import createUserToken from '../helpers/create-user-token';
+import getToken from '../helpers/get-token';
+import { verify } from 'jsonwebtoken';
 
 class UserController {
     static async register(req: Request, res: Response) {
@@ -22,6 +25,7 @@ class UserController {
         try {
             const newUser = await user.save()
 
+            await createUserToken(newUser, req, res)
         } catch (error) {
             return res.status(422).json(error)
         }
@@ -40,7 +44,31 @@ class UserController {
 
         const checkPassword = await UserController.comparePassword(password, user.password)
 
-        if (!checkPassword) { return res.status(422).json("Senha inválida")}
+        if (!checkPassword) { return res.status(422).json("Senha inválida") }
+
+        await createUserToken(user, req, res)
+    }
+
+    static async checkUser(req: Request, res: Response) {
+
+        let currentUser = null;
+
+        try {
+
+            if (req.headers.authorization) {
+                const token = getToken(req)
+                const decoded = verify(token, 'usersecret')
+
+                if (typeof decoded === 'object' && 'id' in decoded) {
+                    currentUser = await User.findById(decoded.id).select('-password').exec() || null;
+                }
+            }
+
+            res.status(200).send(currentUser)
+        } catch (error) {
+
+            res.status(500).json("Token inválido")
+        }
     }
 
     static async hashPassword(password: string) {
