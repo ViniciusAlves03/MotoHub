@@ -54,8 +54,6 @@ class UserController {
     static async getUserById(req: Request, res: Response) {
         const id = req.params.id
 
-        console.log(req)
-
         const token = getToken(req)
         if (!token) { return res.status(422).json("Acesso negado!") }
 
@@ -91,7 +89,7 @@ class UserController {
 
             res.status(200).json("Usuário atualizado com sucesso!")
         } catch (error) {
-            return res.status(422).json("Usuário não foi atualizado, aconteceu um erro inesperado!")
+            res.status(422).json("Usuário não foi atualizado, aconteceu um erro inesperado!")
         }
     }
 
