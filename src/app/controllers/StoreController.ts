@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import Store from "../models/Store";
+import { IStore } from "../models/interfaces/IStore";
 import createUserToken from "../helpers/create-user-token";
 
 class StoreController {
@@ -48,6 +49,23 @@ class StoreController {
         } catch (error) {
             return res.status(422).json("não foi possível registrar a loja!")
         }
+    }
+
+    static async login(req: Request, res: Response){
+        const {email, password} = req.body
+
+        if (!email) { return res.status(422).json("o email é obrigatório") }
+        if (!password) { return res.status(422).json("a senha é obrigatória") }
+
+        const store = await Store.findOne({email: email})
+
+        if(!store){ return res.status(422).json("Loja não cadastrada")}
+
+        const checkPassword = await StoreController.comparePassword(password, store.password)
+
+        if (!checkPassword) { return res.status(422).json("Senha inválida") }
+
+        await createUserToken(store, req, res)
     }
 
     static async hashPassword(password: string) {
