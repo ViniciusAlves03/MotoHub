@@ -2,12 +2,12 @@ import { Router } from "express";
 import UserController from "../controllers/UserController";
 import verifyToken from "../helpers/verify-token";
 
-const UserRouter = Router();
+const userRouter = Router();
 
-UserRouter.post('/login', UserController.login)
-UserRouter.post('/register', UserController.register)
-UserRouter.get('/checkuser', UserController.checkUser)
-UserRouter.get('/:id', UserController.getUserById)
-UserRouter.patch('/edit/:id', verifyToken, UserController.editUser)
+userRouter.post('/login', UserController.login)
+userRouter.post('/register', UserController.register)
+userRouter.get('/checkuser', UserController.checkUser)
+userRouter.get('/:id', UserController.getUserById)
+userRouter.patch('/edit/:id', verifyToken, UserController.editUser)
 
-export default UserRouter
+export default userRouter

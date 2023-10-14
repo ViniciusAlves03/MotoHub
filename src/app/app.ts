@@ -1,5 +1,6 @@
 import express from "express";
-import UserRouter from "./routes/UserRoutes";
+import userRouter from "./routes/UserRoutes";
+import storeRouter from "./routes/StoreRoutes";
 
 export class App {
     public server: express.Application;
@@ -16,6 +17,7 @@ export class App {
     }
 
     private router() {
-        this.server.use('/user', UserRouter);
+        this.server.use('/user', userRouter);
+        this.server.use('/store', storeRouter);
     }
 }

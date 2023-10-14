@@ -29,7 +29,7 @@ class UserController {
 
             await createUserToken(newUser, req, res)
         } catch (error) {
-            return res.status(422).json(error)
+            return res.status(422).json("não foi possível registrar o usuário!")
         }
     }
 
@@ -89,7 +89,7 @@ class UserController {
                 { new: true }
             );
 
-            res.status(200).json("Usuário atualizado com sucesso!" )
+            res.status(200).json("Usuário atualizado com sucesso!")
         } catch (error) {
             return res.status(422).json("Usuário não foi atualizado, aconteceu um erro inesperado!")
         }
