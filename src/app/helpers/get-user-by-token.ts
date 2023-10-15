@@ -6,9 +6,7 @@ const getUserByToken = async (token: string, res: Response) => {
 
     let userId = null
 
-    if (!token) {
-        return res.status(401).json({ message: "Acesso negado!" })
-    }
+    if (!token) { return res.status(401).json({ message: "Acesso negado!" }) }
 
     const decoded = verify(token, 'usersecret')
 
