@@ -9,6 +9,7 @@ const Store = mongoose.model<IStore>('Store', new Schema({
             password: { type: String, required: true },
             phone: { type: String, required: true },
             cnpj: { type: String, required: true },
+            image: { type: String, required: true },
             adress: {
                 street: { type: String, required: true },
                 number: { type: String, required: true },

@@ -11,6 +11,8 @@ class StoreController {
     static async register(req: Request, res: Response) {
         const { name, email, password, phone, cnpj, adress: { street, number, neighborhood, state, city, country } } = req.body
 
+        const image = req.file as Express.Multer.File
+
         if (!name) { return res.status(422).json("o nome é obrigatório") }
         if (!email) { return res.status(422).json("o email é obrigatório") }
         if (!password) { return res.status(422).json("a senha é obrigatória") }
@@ -22,6 +24,7 @@ class StoreController {
         if (!state) { return res.status(422).json("o estado é obrigatório") }
         if (!city) { return res.status(422).json("a cidade é obrigatória") }
         if (!country) { return res.status(422).json("o país é obrigatório") }
+        if (!image) { return res.status(422).json("a foto é obrigatória") }
 
         const storeExists = await Store.findOne({ email: email })
 
@@ -35,6 +38,7 @@ class StoreController {
             password: passwordHash,
             phone,
             cnpj,
+            image: image.filename,
             adress: {
                 street,
                 number,
@@ -84,28 +88,57 @@ class StoreController {
         res.status(200).json({ store })
     }
 
-    static async editStore(req: Request, res: Response){
+    static async updateStore(req: Request, res: Response) {
         const token = getToken(req)
         const store = await getStoreByToken(token, res) as IStore
 
         const { name, password, phone, cnpj, adress: { street, number, neighborhood, state, city, country } } = req.body
 
+        const image = req.file as Express.Multer.File
+
+        const updatedStore: Partial<typeof store> = {}
+
+        const updatedAdress = {
+            street,
+            number,
+            neighborhood,
+            state,
+            city,
+            country
+        }
+
+        const passwordHash = await StoreController.hashPassword(password)
+
         if (!name) { return res.status(422).json("o nome é obrigatório") }
+        else { updatedStore.name = name}
         if (!password) { return res.status(422).json("a senha é obrigatória") }
+        else { updatedStore.password = passwordHash}
         if (!phone) { return res.status(422).json("o número é obrigatório") }
+        else { updatedStore.phone = phone}
         if (!cnpj) { return res.status(422).json("o CNPJ é obrigatório") }
+        else { updatedStore.cnpj = cnpj}
         if (!street) { return res.status(422).json("a rua é obrigatória") }
+        else { updatedAdress.street = street}
         if (!number) { return res.status(422).json("o número é obrigatório") }
+        else { updatedAdress.number = number}
         if (!neighborhood) { return res.status(422).json("o bairro é obrigatório") }
+        else { updatedAdress.neighborhood = neighborhood}
         if (!state) { return res.status(422).json("o estado é obrigatório") }
+        else { updatedAdress.state = state}
         if (!city) { return res.status(422).json("a cidade é obrigatória") }
+        else { updatedAdress.city = city}
         if (!country) { return res.status(422).json("o país é obrigatório") }
+        else { updatedAdress.country = country}
+        if(!image){ return res.status(422).json("a foto é obrigatória")}
+        else {updatedStore.image = image.filename}
+
+        updatedStore.adress = updatedAdress
 
         try {
             await Store.findOneAndUpdate(
-                {_id: store.id},
-                {$set: store},
-                {new: true}
+                { _id: store.id },
+                { $set: updatedStore },
+                { new: true }
             )
 
             res.status(200).json("Loja atualizada com sucesso!")
@@ -114,11 +147,11 @@ class StoreController {
         }
     }
 
-    static async checkStore(req: Request, res: Response){
+    static async checkStore(req: Request, res: Response) {
         let currentStore = null
 
         try {
-            if (req.headers.authorization){
+            if (req.headers.authorization) {
                 const token = getToken(req)
                 const decoded = verify(token, 'usersecret')
 

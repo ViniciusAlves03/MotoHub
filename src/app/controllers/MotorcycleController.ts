@@ -107,7 +107,7 @@ class MotorcycleController {
         res.status(200).json('Moto removida com sucesso!')
     }
 
-    static async updateMotorcycle(req: Request, res: Response) {
+    static async updatedMotorcycle(req: Request, res: Response) {
 
         const id = req.params.id
 
@@ -124,28 +124,28 @@ class MotorcycleController {
 
         if (motorcycle.store.toString() !== store.id.toString()){ return res.status(422).json( 'Houve um problema em processar sua solicitação, tente novamente!')}
 
-        const updateMotorcycle: Partial<typeof motorcycle> = {}
+        const updatedMotorcycle: Partial<typeof motorcycle> = {}
 
         if (!brand) { return res.status(422).json("a marca é obrigatória") }
-        else { updateMotorcycle.brand = brand}
+        else { updatedMotorcycle.brand = brand}
         if (!model) { return res.status(422).json("o modelo é obrigatório") }
-        else { updateMotorcycle.model = model}
+        else { updatedMotorcycle.model = model}
         if (!year) { return res.status(422).json("o ano é obrigatório") }
-        else { updateMotorcycle.year = year}
+        else { updatedMotorcycle.year = year}
         if (!engineDisplacement) { return res.status(422).json("a cilindrada do motor é obrigatória") }
-        else { updateMotorcycle.engineDisplacement = engineDisplacement}
+        else { updatedMotorcycle.engineDisplacement = engineDisplacement}
         if (!engineType) { return res.status(422).json("o tipo do motor é obrigatório") }
-        else { updateMotorcycle.engineType = engineType}
+        else { updatedMotorcycle.engineType = engineType}
         if (!mileage) { return res.status(422).json("a quilometragem é obrigatória") }
-        else { updateMotorcycle.mileage = mileage}
+        else { updatedMotorcycle.mileage = mileage}
         if (!price) { return res.status(422).json("o preço é obrigatório") }
-        else { updateMotorcycle.price = price}
+        else { updatedMotorcycle.price = price}
         if (!condition) { return res.status(422).json("a condição é obrigatória") }
-        else { updateMotorcycle.condition = condition}
+        else { updatedMotorcycle.condition = condition}
         if (!color) { return res.status(422).json("a cor é obrigatória") }
-        else { updateMotorcycle.color = color}
+        else { updatedMotorcycle.color = color}
         if (!description) { return res.status(422).json("a descrição é obrigatória") }
-        else { updateMotorcycle.description = description}
+        else { updatedMotorcycle.description = description}
         if (!images || images.length === 0) { return res.status(422).json("as imagens são obrigatórias") }
         else {
             images.map((image) => {
@@ -153,7 +153,7 @@ class MotorcycleController {
             })
         }
 
-        await Motorcycle.findByIdAndUpdate(id, updateMotorcycle)
+        await Motorcycle.findByIdAndUpdate(id, updatedMotorcycle)
 
         res.status(200).json('Moto atualizada com sucesso!')
     }

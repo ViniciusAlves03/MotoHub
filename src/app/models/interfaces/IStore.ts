@@ -7,5 +7,6 @@ export interface IStore extends IAdress{
     password: string;
     phone: string;
     cnpj: string;
+    image: string,
     adress: IAdress;
 }

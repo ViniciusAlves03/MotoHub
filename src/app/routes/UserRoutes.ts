@@ -8,6 +8,6 @@ userRouter.post('/login', UserController.login)
 userRouter.post('/register', UserController.register)
 userRouter.get('/checkuser', UserController.checkUser)
 userRouter.get('/:id', UserController.getUserById)
-userRouter.patch('/edit/:id', verifyToken, UserController.editUser)
+userRouter.patch('/edit/:id', verifyToken, UserController.updateUser)
 
 export default userRouter

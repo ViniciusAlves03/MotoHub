@@ -8,6 +8,7 @@ const User = mongoose.model<IUser>('User', new Schema({
             email: { type: String, required: true },
             password: { type: String, required: true },
             phone: { type: String, required: true },
+            image: { type: String }
 
         }, { timestamps: true }
     )

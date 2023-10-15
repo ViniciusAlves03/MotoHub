@@ -10,6 +10,6 @@ motorcycleRouter.get('/', MotorcycleController.getAllMotorcycles)
 motorcycleRouter.get('/mymotorcycles', verifyToken, MotorcycleController.getAllStoreMotorcycles)
 motorcycleRouter.get('/:id', MotorcycleController.getMotorcycleById)
 motorcycleRouter.delete('/delete/:id', verifyToken, MotorcycleController.removeMotorcycleById)
-motorcycleRouter.patch('/edit/:id', verifyToken, imageUpload.array('images'), MotorcycleController.updateMotorcycle)
+motorcycleRouter.patch('/edit/:id', verifyToken, imageUpload.array('images'), MotorcycleController.updatedMotorcycle)
 
 export default motorcycleRouter
