@@ -11,10 +11,8 @@ class UserController {
     static async register(req: Request, res: Response) {
         const { name, email, password, phone } = req.body
 
-        const image = req.file as Express.Multer.File
-
         if (!name) { return res.status(422).json("o nome é obrigatório") }
-        if (!email) { return res.status(422).json("o email é obrigatório") } //realizar validação de e-mail depois
+        if (!email) { return res.status(422).json("o email é obrigatório") }
         if (!password) { return res.status(422).json("a senha é obrigatória") }
         if (!phone) { return res.status(422).json("o número é obrigatório") }
 
@@ -24,7 +22,7 @@ class UserController {
 
         const passwordHash = await UserController.hashPassword(password)
 
-        const user = new User({ name, email, phone, password: passwordHash, image: image.filename })
+        const user = new User({ name, email, phone, password: passwordHash, image: null })
 
         try {
             const newUser = await user.save()

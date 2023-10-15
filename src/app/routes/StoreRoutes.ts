@@ -5,10 +5,10 @@ import { imageUpload } from "../helpers/image-upload";
 
 const storeRouter = Router();
 
-storeRouter.post('/register', imageUpload.single('images'), StoreController.register)
+storeRouter.post('/register', imageUpload.single('image'), StoreController.register)
 storeRouter.post('/login', StoreController.login)
 storeRouter.get('/checkstore', StoreController.checkStore)
 storeRouter.get('/:id', StoreController.getStoreById)
-storeRouter.patch('/edit/:id', imageUpload.single('images'), verifyToken, StoreController.updateStore)
+storeRouter.patch('/edit/:id', imageUpload.single('image'), verifyToken, StoreController.updateStore)
 
 export default storeRouter

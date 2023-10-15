@@ -9,7 +9,7 @@ import { verify } from "jsonwebtoken";
 
 class StoreController {
     static async register(req: Request, res: Response) {
-        const { name, email, password, phone, cnpj, adress: { street, number, neighborhood, state, city, country } } = req.body
+        const { name, email, password, phone, cnpj, street, number, neighborhood, state, city, country } = req.body
 
         const image = req.file as Express.Multer.File
 
@@ -92,7 +92,7 @@ class StoreController {
         const token = getToken(req)
         const store = await getStoreByToken(token, res) as IStore
 
-        const { name, password, phone, cnpj, adress: { street, number, neighborhood, state, city, country } } = req.body
+        const { name, password, phone, cnpj, street, number, neighborhood, state, city, country } = req.body
 
         const image = req.file as Express.Multer.File
 
@@ -110,27 +110,27 @@ class StoreController {
         const passwordHash = await StoreController.hashPassword(password)
 
         if (!name) { return res.status(422).json("o nome é obrigatório") }
-        else { updatedStore.name = name}
+        else { updatedStore.name = name }
         if (!password) { return res.status(422).json("a senha é obrigatória") }
-        else { updatedStore.password = passwordHash}
+        else { updatedStore.password = passwordHash }
         if (!phone) { return res.status(422).json("o número é obrigatório") }
-        else { updatedStore.phone = phone}
+        else { updatedStore.phone = phone }
         if (!cnpj) { return res.status(422).json("o CNPJ é obrigatório") }
-        else { updatedStore.cnpj = cnpj}
+        else { updatedStore.cnpj = cnpj }
         if (!street) { return res.status(422).json("a rua é obrigatória") }
-        else { updatedAdress.street = street}
+        else { updatedAdress.street = street }
         if (!number) { return res.status(422).json("o número é obrigatório") }
-        else { updatedAdress.number = number}
+        else { updatedAdress.number = number }
         if (!neighborhood) { return res.status(422).json("o bairro é obrigatório") }
-        else { updatedAdress.neighborhood = neighborhood}
+        else { updatedAdress.neighborhood = neighborhood }
         if (!state) { return res.status(422).json("o estado é obrigatório") }
-        else { updatedAdress.state = state}
+        else { updatedAdress.state = state }
         if (!city) { return res.status(422).json("a cidade é obrigatória") }
-        else { updatedAdress.city = city}
+        else { updatedAdress.city = city }
         if (!country) { return res.status(422).json("o país é obrigatório") }
-        else { updatedAdress.country = country}
-        if(!image){ return res.status(422).json("a foto é obrigatória")}
-        else {updatedStore.image = image.filename}
+        else { updatedAdress.country = country }
+        if (!image) { return res.status(422).json("a foto é obrigatória") }
+        else { updatedStore.image = image.filename }
 
         updatedStore.adress = updatedAdress
 
