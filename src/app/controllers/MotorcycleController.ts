@@ -50,11 +50,28 @@ class MotorcycleController {
 
             res.status(200).json({
                 message: "A moto foi cadastrada",
-                motorcycle
+                newMotorcycle
             })
         } catch (error) {
             res.status(500).json("A moto não foi cadastrada")
         }
+    }
+
+    static async getAllMotorcycles(req: Request, res: Response){
+
+        const motorcycles = await Motorcycle.find().sort('-createdAt')
+
+        res.status(200).json({motorcycles: motorcycles})
+    }
+
+    static async getAllStoreMotorcycles(req: Request, res: Response){
+
+        const token = getToken(req)
+        const store = await getStoreByToken(token, res) as IStore
+
+        const motorcycles = await Motorcycle.find({'store' : store.id}).sort('-createdAt')
+
+        res.status(200).json({motorcycles})
     }
 }
 
