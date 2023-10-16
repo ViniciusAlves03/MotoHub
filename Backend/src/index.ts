@@ -7,5 +7,5 @@ const PORT = process.env.PORT || process.env.LOCAL_PORT;
 new App().server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 mongoose.connection.on('connected', () => {
-    console.log('Conectado ao MongoDB');
+    console.log('Connected to MongoDB');
 });
