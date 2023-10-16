@@ -6,6 +6,7 @@ import createUserToken from '../helpers/create-user-token';
 import getToken from '../helpers/get-token';
 import getUserByToken from '../helpers/get-user-by-token';
 import { IUser } from '../models/interfaces/IUser';
+import Motorcycle from '../models/Motorcycle';
 
 class UserController {
     static async register(req: Request, res: Response) {
@@ -16,9 +17,11 @@ class UserController {
         if (!password) { return res.status(422).json("a senha é obrigatória") }
         if (!phone) { return res.status(422).json("o número é obrigatório") }
 
-        const userExists = await User.findOne({ email: email })
+        const userNameExists = await User.findOne({name: name})
+        if (userNameExists) { return res.status(422).json("Nome de usuário já cadastrado, utilize outro nome") }
 
-        if (userExists) { return res.status(422).json("E-mail já cadastrado, utilize outro e-mail") }
+        const userEmailExists = await User.findOne({ email: email })
+        if (userEmailExists) { return res.status(422).json("E-mail já cadastrado, utilize outro e-mail") }
 
         const passwordHash = await UserController.hashPassword(password)
 
@@ -76,6 +79,9 @@ class UserController {
         if (!name) { return res.status(422).json("O nome é obrigatório") }
         user.name = name
 
+        const userNameExists = await User.findOne({name: name})
+        if (userNameExists) { return res.status(422).json("Nome de usuário já cadastrado, utilize outro nome") }
+
         if (!phone) { return res.status(422).json("O telefone é obrigatório") }
         user.phone = phone
 
@@ -115,6 +121,22 @@ class UserController {
         } catch (error) {
             res.status(500).json("Token inválido")
         }
+    }
+
+    static async getMyMotorcycles(req: Request, res: Response) {
+
+        const token = getToken(req)
+        const user = await getUserByToken(token, res) as IUser
+
+        const motorcycles = await Motorcycle.find({
+            $or: [
+                { 'newOwner': user.email },
+                { 'newOwner': user.id },
+                { 'newOwner': user.name }
+            ]
+        }).sort('-createdAt');
+
+        res.status(200).json({ motorcycles })
     }
 
     static async hashPassword(password: string) {
