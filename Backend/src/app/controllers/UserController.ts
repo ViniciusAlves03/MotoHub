@@ -7,21 +7,24 @@ import getToken from '../helpers/get-token';
 import getUserByToken from '../helpers/get-user-by-token';
 import { IUser } from '../models/interfaces/IUser';
 import Motorcycle from '../models/Motorcycle';
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 class UserController {
     static async register(req: Request, res: Response) {
         const { name, email, password, phone } = req.body
 
-        if (!name) { return res.status(422).json("o nome é obrigatório") }
-        if (!email) { return res.status(422).json("o email é obrigatório") }
-        if (!password) { return res.status(422).json("a senha é obrigatória") }
-        if (!phone) { return res.status(422).json("o número é obrigatório") }
+        if (!name) { return res.status(422).json({ message: "o nome é obrigatório" }) }
+        if (!email) { return res.status(422).json({ message: "o email é obrigatório" }) }
+        if (!password) { return res.status(422).json({ message: "a senha é obrigatória" }) }
+        if (!phone) { return res.status(422).json({ message: "o número é obrigatório" }) }
 
-        const userNameExists = await User.findOne({name: name})
-        if (userNameExists) { return res.status(422).json("Nome de usuário já cadastrado, utilize outro nome") }
+        const userNameExists = await User.findOne({ name: name })
+        if (userNameExists) { return res.status(422).json({ message: "Nome de usuário já cadastrado, utilize outro nome" }) }
 
         const userEmailExists = await User.findOne({ email: email })
-        if (userEmailExists) { return res.status(422).json("E-mail já cadastrado, utilize outro e-mail") }
+        if (userEmailExists) { return res.status(422).json({ message: "E-mail já cadastrado, utilize outro e-mail" }) }
 
         const passwordHash = await UserController.hashPassword(password)
 
@@ -32,7 +35,7 @@ class UserController {
 
             await createUserToken(newUser, req, res)
         } catch (error) {
-            return res.status(422).json("não foi possível registrar o usuário!")
+            return res.status(422).json({ message: "não foi possível registrar o usuário!" })
         }
     }
 
@@ -40,16 +43,16 @@ class UserController {
 
         const { email, password } = req.body
 
-        if (!email) { return res.status(422).json("o email é obrigatório") }
-        if (!password) { return res.status(422).json("a senha é obrigatória") }
+        if (!email) { return res.status(422).json({ message: "o email é obrigatório" }) }
+        if (!password) { return res.status(422).json({ message: "a senha é obrigatória" }) }
 
         const user = await User.findOne({ email: email })
 
-        if (!user) { return res.status(422).json("Usuário não cadastrado") }
+        if (!user) { return res.status(422).json({ message: "Usuário não cadastrado" }) }
 
         const checkPassword = await UserController.comparePassword(password, user.password)
 
-        if (!checkPassword) { return res.status(422).json("Senha inválida") }
+        if (!checkPassword) { return res.status(422).json({ message: "Senha inválida" }) }
 
         await createUserToken(user, req, res)
     }
@@ -58,11 +61,11 @@ class UserController {
         const id = req.params.id
 
         const token = getToken(req)
-        if (!token) { return res.status(422).json("Acesso negado!") }
+        if (!token) { return res.status(422).json({ message: "Acesso negado!" }) }
 
         const user = await User.findById(id).select('-password')
 
-        if (!user) { return res.status(422).json("Usuário não encontrado!") }
+        if (!user) { return res.status(422).json({ message: "Usuário não encontrado!" }) }
 
         res.status(200).json({ user })
     }
@@ -76,16 +79,16 @@ class UserController {
 
         const image = req.file as Express.Multer.File
 
-        if (!name) { return res.status(422).json("O nome é obrigatório") }
+        if (!name) { return res.status(422).json({ message: "O nome é obrigatório" }) }
         user.name = name
 
-        const userNameExists = await User.findOne({name: name})
-        if (userNameExists) { return res.status(422).json("Nome de usuário já cadastrado, utilize outro nome") }
+        const userNameExists = await User.findOne({ name: name })
+        if (userNameExists) { return res.status(422).json({ message: "Nome de usuário já cadastrado, utilize outro nome" }) }
 
-        if (!phone) { return res.status(422).json("O telefone é obrigatório") }
+        if (!phone) { return res.status(422).json({ message: "O telefone é obrigatório" }) }
         user.phone = phone
 
-        if (!password) { return res.status(422).json("A senha é obrigatória") }
+        if (!password) { return res.status(422).json({ message: "A senha é obrigatória" }) }
         user.password = password
 
         if (image) { user.image = image.filename }
@@ -97,9 +100,9 @@ class UserController {
                 { new: true }
             );
 
-            res.status(200).json("Usuário atualizado com sucesso!")
+            res.status(200).json({ message: "Usuário atualizado com sucesso!" })
         } catch (error) {
-            res.status(422).json("Usuário não foi atualizado, aconteceu um erro inesperado!")
+            res.status(422).json({ message: "Usuário não foi atualizado, aconteceu um erro inesperado!" })
         }
     }
 
@@ -110,7 +113,7 @@ class UserController {
         try {
             if (req.headers.authorization) {
                 const token = getToken(req)
-                const decoded = verify(token, 'usersecret')
+                const decoded = verify(token, process.env.SECRET_JWT!)
 
                 if (typeof decoded === 'object' && 'id' in decoded) {
                     currentUser = await User.findById(decoded.id).select('-password').exec() || null;
@@ -119,7 +122,7 @@ class UserController {
 
             res.status(200).send(currentUser)
         } catch (error) {
-            res.status(500).json("Token inválido")
+            res.status(500).json({ message: "Token inválido" })
         }
     }
 

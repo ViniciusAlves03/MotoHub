@@ -3,11 +3,11 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const mongoURI = process.env.DB_CONN_STRING
-
 async function main() {
-    if (mongoURI) {
-        await mongoose.connect(mongoURI);
+    if (process.env.DB_CONN_STRING
+        ) {
+        await mongoose.connect(process.env.DB_CONN_STRING
+            );
     }
 }
 
