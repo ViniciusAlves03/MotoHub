@@ -15,7 +15,9 @@ const Motorcycle = mongoose.model<IMotorcycle>('Motorcycle', new Schema({
             color: { type: String, required: true },
             description: { type: String, required: true },
             images: [{ type: String}],
-            store: { type: Schema.Types.ObjectId, ref: "Store" }
+            store: { type: Schema.Types.ObjectId, ref: "Store" },
+            sold: {type: Boolean},
+            newOwner: {type: String},
         }, { timestamps: true }
     )
 )

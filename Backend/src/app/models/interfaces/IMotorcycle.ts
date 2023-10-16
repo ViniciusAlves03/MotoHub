@@ -13,4 +13,6 @@ export interface IMotorcycle{
     description: string;
     images: Array<string>;
     store: Schema.Types.ObjectId;
+    sold: Boolean;
+    newOwner: string;
 }
