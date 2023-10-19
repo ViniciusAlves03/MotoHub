@@ -13,13 +13,15 @@
 O MotoHUB consiste em um site de venda e compra de motos!
 
 (O projeto ainda está em desenvolvimento, atualmente possui apenas o Back-end)
+
+link do backend: https://api-motohub.onrender.com
 <br>
 
 ## ⚙️ Funcionalidades <a id="funcionalidades"></a>
 * Realizar cadastro e login de usuário e loja
 * Cada loja consegue cadastrar, editar e remover suas motocicletas quando necessário
 * A loja e o usuário conseguem editar suas próprias informações, uma vez que estão cadastrados
-* A loja consegue marcar como vendida uma moto e deixá-la como um hsitórico de vendas
+* A loja consegue marcar como vendida uma moto e deixá-la no histórico de vendas
 * O usuário consegue ver as motos que ele já adquiriu através do site
 
 ------------------------------------
