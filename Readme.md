@@ -14,7 +14,7 @@ O MotoHUB consiste em um site de venda e compra de motos!
 
 (O projeto ainda está em desenvolvimento, atualmente possui apenas o Back-end)
 
-link do backend: https://api-motohub.onrender.com
+backend: https://api-motohub.onrender.com
 <br>
 
 ## ⚙️ Funcionalidades <a id="funcionalidades"></a>
